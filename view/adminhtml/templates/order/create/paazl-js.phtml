@@ -4,13 +4,13 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Magento\Backend\Block\Template;
 
-// @codingStandardsIgnoreFile
+/** @var Template $block */
+/** @var SecureHtmlRenderer $secureRenderer */
 
-/* @var $block Magento\Backend\Block\Template */
-?>
-
-<script type="text/javascript">
+$scriptString = "
     require([
         'jquery',
         'Magento_Sales/order/create/scripts',
@@ -40,4 +40,11 @@
             }
         );
     });
-</script>
+";
+
+?>
+<?php if (class_exists(SecureHtmlRenderer::class)): ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+<?php else: ?>
+    <?= /* @noEscape */ sprintf('<script type="text/javascript">%s</script>', $scriptString) ?>
+<?php endif; ?>

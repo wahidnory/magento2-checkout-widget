@@ -4,16 +4,24 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Paazl\CheckoutWidget\Block\Adminhtml\Order\Create\Shipping\Method\Paazl\Widget\Config as WidgetConfig;
 
-// @codingStandardsIgnoreFile
+/** @var WidgetConfig $block */
+/** @var SecureHtmlRenderer $secureRenderer */
 
-/* @var $block Paazl\CheckoutWidget\Block\Adminhtml\Order\Create\Shipping\Method\Paazl\Widget\Config */
-?>
-<script>
+$scriptString = "
     require(
-        ["Magento_Sales/order/create/form"],
+        ['Magento_Sales/order/create/form'],
         function () {
-            Object.assign(order, <?= /* @escapeNotVerified */ $block->getSerializedWidgetConfig() ?>);
+            Object.assign(order, {$block->getSerializedWidgetConfig()});
         }
     );
-</script>
+";
+
+?>
+<?php if (class_exists(SecureHtmlRenderer::class)): ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+<?php else: ?>
+    <?= /* @noEscape */ sprintf('<script>%s</script>', $scriptString) ?>
+<?php endif; ?>

@@ -4,21 +4,30 @@
  * See COPYING.txt for license details.
  */
 
-// @codingStandardsIgnoreFile
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Paazl\CheckoutWidget\Block\Checkout\Widget as CheckoutWidgetBlock;
 
-/** @var Paazl\CheckoutWidget\Block\Checkout\Widget $block */
+/** @var CheckoutWidgetBlock $block */
+/** @var SecureHtmlRenderer $secureRenderer */
 ?>
-<?php if ($block->getApiBaseUrl()) : ?>
-<script type="text/javascript">
-    window.PAAZL_CHECKOUT_WIDGET_API_URL = '<?= /* @escapeNotVerified */ $block->getApiBaseUrl(); ?>';
-    window.PAAZL_CHECKOUT_WIDGET_LOCAL_RESOURCE_URL = '<?= /* @escapeNotVerified */ $block->getLocalResourceUrl(); ?>';
-</script>
+<?php
+    $scriptString = '';
+
+    if ($block->getApiBaseUrl()) {
+        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_API_URL = '%s';\n", $block->escapeJs($block->getApiBaseUrl()));
+        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_LOCAL_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
+    }
+
+    if ($block->useLocal()) {
+        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
+    }
+?>
+<?php if (class_exists(SecureHtmlRenderer::class)): ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+<?php else: ?>
+    <?= /* @noEscape */ sprintf('<script type="text/javascript">%s</script>', $scriptString) ?>
 <?php endif; ?>
-<?php if ($block->useLocal()) : ?>
-    <script type="text/javascript">
-        window.PAAZL_CHECKOUT_WIDGET_RESOURCE_URL = '<?= /* @escapeNotVerified */ $block->getLocalResourceUrl(); ?>';
-    </script>
-<?php endif; ?>
+
 <?php if ($block->getCustomCss() != '') : ?>
 <style>:root {<?= /* @escapeNotVerified */ $block->getCustomCss() ?>}</style>
 <?php endif; ?>
