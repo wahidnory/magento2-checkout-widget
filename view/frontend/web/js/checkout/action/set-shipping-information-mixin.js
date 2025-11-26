@@ -22,12 +22,12 @@ define([
         return wrapper.wrap(target, function (originalAction) {
             let shippingMethod = quote.shippingMethod();
             let address = getActiveAddress();
-            
+
             if (shippingLocations.selectedLocationCode()
                 && shippingLocations.locationsList().length
                 && shippingMethod
                 && widgetConfig.prototype.getCarrierCode() === shippingMethod.carrier_code
-                && widgetConfig.prototype.getMethodCode() === shippingMethod.method_code) 
+                && widgetConfig.prototype.getMethodCode() === shippingMethod.method_code)
             {
                 var collectionPointInfo =_.findWhere(shippingLocations.locationsList(), {code: shippingLocations.selectedLocationCode()}),
                     shippingAddress = quote.shippingAddress();
@@ -54,7 +54,7 @@ define([
                 const selectedShippingAddress = customerData.get('checkout-data')().selectedShippingAddress;
                 const shippingAddress = quote.billingAddress();
                 let currentAddress;
-                    
+
                 if (isCustomerLogin && Object.keys(window.checkoutConfig.customerData.addresses).length > 0) {
                     currentAddress = selectedShippingAddress === 'new-customer-address'
                         ? customerData.get('checkout-data')().shippingAddressFromData
@@ -63,11 +63,16 @@ define([
                     currentAddress = customerData.get('checkout-data')().shippingAddressFromData;
                 }
 
+                // In newer Magento versions, guest user address data is nested under store code
+                if (currentAddress[window.checkoutConfig.storeCode]) {
+                    currentAddress = currentAddress[window.checkoutConfig.storeCode];
+                }
+
                 shippingAddress.firstname = currentAddress.firstname;
                 shippingAddress.lastname = currentAddress.lastname;
                 shippingAddress.countryId = currentAddress.country_id;
-                shippingAddress.region = typeof currentAddress.region === 'object' && currentAddress.region !== null 
-                    ? currentAddress.region.region 
+                shippingAddress.region = typeof currentAddress.region === 'object' && currentAddress.region !== null
+                    ? currentAddress.region.region
                     : currentAddress.region;
                 shippingAddress.city = currentAddress.city;
                 shippingAddress.postcode = currentAddress.postcode;
