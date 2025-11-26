@@ -1,8 +1,10 @@
 <?php
 /**
- * Copyright © 2019 Paazl. All rights reserved.
+ * Copyright © Paazl. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
 
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Paazl\CheckoutWidget\Block\Checkout\Widget as CheckoutWidgetBlock;
@@ -11,23 +13,28 @@ use Paazl\CheckoutWidget\Block\Checkout\Widget as CheckoutWidgetBlock;
 /** @var SecureHtmlRenderer $secureRenderer */
 ?>
 <?php
-    $scriptString = '';
+$scriptString = '';
 
-    if ($block->getApiBaseUrl()) {
-        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_API_URL = '%s';\n", $block->escapeJs($block->getApiBaseUrl()));
-        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_LOCAL_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
-    }
+if ($block->getApiBaseUrl()) {
+    $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_API_URL = '%s';\n", $block->escapeJs($block->getApiBaseUrl()));
+    $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_LOCAL_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
+}
 
-    if ($block->useLocal()) {
-        $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
-    }
+if ($block->useLocal()) {
+    $scriptString .= sprintf("window.PAAZL_CHECKOUT_WIDGET_RESOURCE_URL = '%s';\n", $block->escapeJs($block->getLocalResourceUrl()));
+}
 ?>
-<?php if (class_exists(SecureHtmlRenderer::class)): ?>
+<?php if (isset($secureRenderer)): ?>
     <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
 <?php else: ?>
     <?= /* @noEscape */ sprintf('<script type="text/javascript">%s</script>', $scriptString) ?>
 <?php endif; ?>
 
 <?php if ($block->getCustomCss() != '') : ?>
-<style>:root {<?= /* @escapeNotVerified */ $block->getCustomCss() ?>}</style>
+    <?php $styleString = sprintf(':root {%s}', $block->getCustomCss()); ?>
+    <?php if (isset($secureRenderer)): ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('style', [], $styleString, false) ?>
+    <?php else: ?>
+        <style><?= /* @noEscape */ $styleString ?></style>
+    <?php endif; ?>
 <?php endif; ?>

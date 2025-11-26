@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2019 Paazl. All rights reserved.
+ * Copyright © Paazl. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -29,7 +29,7 @@ $scriptString = "
                 this.oldShippingMethod = this.shippingMethod;
 
                 if (this.showModalFlag && method === 'paazlshipping_paazlshipping') {
-                    jQuery('#paazl-modal').paazlWidgetModal('openModal');
+                    $('#paazl-modal').paazlWidgetModal('openModal');
 
                     return false;
                 }
@@ -43,7 +43,7 @@ $scriptString = "
 ";
 
 ?>
-<?php if (class_exists(SecureHtmlRenderer::class)): ?>
+<?php if (isset($secureRenderer)): ?>
     <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
 <?php else: ?>
     <?= /* @noEscape */ sprintf('<script type="text/javascript">%s</script>', $scriptString) ?>
