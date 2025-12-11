@@ -105,7 +105,10 @@ class CurlExtra extends Curl
             // phpcs:ignore Magento2.Functions.DiscouragedFunction
             $this->doError(curl_error($this->_ch));
         }
-        // phpcs:ignore Magento2.Functions.DiscouragedFunction
-        curl_close($this->_ch);
+
+        if (PHP_VERSION_ID < 80000) {
+            // phpcs:ignore Magento2.Functions.DiscouragedFunction
+            curl_close($this->_ch);
+        }
     }
 }
