@@ -1,13 +1,17 @@
 <?php
 /**
- * Copyright © 2019 Paazl. All rights reserved.
+ * Copyright © Paazl. All rights reserved.
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Method\Form;
+
 // @codingStandardsIgnoreFile
 
+/** @var Form $block */
+/** @var SecureHtmlRenderer $secureRenderer */
 ?>
-<?php /** @var $block \Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Method\Form */ ?>
 <?php $_shippingRateGroups = $block->getShippingRates(); ?>
 <?php if ($_shippingRateGroups): ?>
     <div id="order-shipping-method-choose" class="control" style="display:none">
@@ -77,11 +81,18 @@
             </a>
         </div>
     <?php else: ?>
-        <script>
+        <?php
+        $scriptString = "
 require(['prototype'], function(){
     $('order-shipping-method-choose').show();
 });
-</script>
+";
+        ?>
+        <?php if (isset($secureRenderer)): ?>
+            <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+        <?php else: ?>
+            <script><?= /* @noEscape */ $scriptString ?></script>
+        <?php endif; ?>
     <?php endif; ?>
 <?php elseif ($block->getIsRateRequest()): ?>
     <div class="order-shipping-method-summary">
@@ -98,10 +109,23 @@ require(['prototype'], function(){
 <div style="display: none;" id="shipping-method-overlay" class="order-methods-overlay">
     <span><?= /* @escapeNotVerified */ __('You don\'t need to select a shipping method.') ?></span>
 </div>
-<script>
-    require(["Magento_Sales/order/create/form"], function(){
-        order.overlay('shipping-method-overlay', <?php if ($block->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
-        order.overlay('address-shipping-overlay', <?php if ($block->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
-        order.isOnlyVirtualProduct = <?= /* @noEscape */ $block->getQuote()->isVirtual() ? 'true' : 'false'; ?>;
+<?php
+$isVirtual = $block->getQuote()->isVirtual();
+$scriptString = sprintf(
+    "
+    require([\"Magento_Sales/order/create/form\"], function(){
+        order.overlay('shipping-method-overlay', %s);
+        order.overlay('address-shipping-overlay', %s);
+        order.isOnlyVirtualProduct = %s;
     });
-</script>
+",
+    $isVirtual ? 'false' : 'true',
+    $isVirtual ? 'false' : 'true',
+    $isVirtual ? 'true' : 'false'
+);
+?>
+<?php if (isset($secureRenderer)): ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+<?php else: ?>
+    <script><?= /* @noEscape */ $scriptString ?></script>
+<?php endif; ?>

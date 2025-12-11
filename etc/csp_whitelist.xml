@@ -4,20 +4,26 @@
     <policies>
         <policy id="script-src">
             <values>
-                <value id="paazl-widget-checkout" type="host">https://widget-acc.paazl.com</value>
-                <value id="paazl-api-checkout" type="host">https://api-acc.paazl.com/</value>
+                <value id="paazl-widget-acc" type="host">https://widget-acc.paazl.com</value>
+                <value id="paazl-widget-prod" type="host">https://widget.paazl.com</value>
+                <value id="paazl-api-acc" type="host">https://api-acc.paazl.com</value>
+                <value id="paazl-api-prod" type="host">https://api.paazl.com</value>
             </values>
         </policy>
         <policy id="style-src">
             <values>
-                <value id="paazl-widget-checkout-css" type="host">https://widget-acc.paazl.com</value>
-                <value id="paazl-api-checkout-css" type="host">https://api-acc.paazl.com/</value>
+                <value id="paazl-widget-acc-css" type="host">https://widget-acc.paazl.com</value>
+                <value id="paazl-widget-prod-css" type="host">https://widget.paazl.com</value>
+                <value id="paazl-api-acc-css" type="host">https://api-acc.paazl.com</value>
+                <value id="paazl-api-prod-css" type="host">https://api.paazl.com</value>
             </values>
         </policy>
         <policy id="connect-src">
             <values>
-                <value id="paazl-widget-checkout-connect" type="host">https://widget-acc.paazl.com</value>
-                <value id="paazl-api-checkout-connect" type="host">https://api-acc.paazl.com/</value>
+                <value id="paazl-widget-acc-connect" type="host">https://widget-acc.paazl.com</value>
+                <value id="paazl-widget-prod-connect" type="host">https://widget.paazl.com</value>
+                <value id="paazl-api-acc-connect" type="host">https://api-acc.paazl.com</value>
+                <value id="paazl-api-prod-connect" type="host">https://api.paazl.com</value>
             </values>
         </policy>
     </policies>
