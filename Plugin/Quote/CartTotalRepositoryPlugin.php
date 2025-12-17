@@ -36,7 +36,7 @@ class CartTotalRepositoryPlugin
         Config $config
     ) {
         $this->appendShippingMethods = $appendShippingMethods;
-        $this->config                = $config
+        $this->config = $config;
     }
 
     /**
